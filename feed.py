@@ -9,7 +9,15 @@ with open('feed.yaml','r') as file:
     'xmlns:content':'http://purl.org/rss/1.0/modules/content/'})
 
 channel_element = xml_tree.SubElement(rss_element,"channel")
-link_prefix = yaml_data['link']
+# Safe access to the 'link' key with default value
+link_prefix = yaml_data.get('link', '')
+
+# Ensure required keys exist before accessing
+required_keys = ['title', 'format', 'subtitle', 'author', 'description', 'image', 'language', 'category', 'item']
+for key in required_keys:
+    if key not in yaml_data:
+        print(f"Warning: '{key}' key is missing in the YAML data.")
+        yaml_data[key] = ''  # Assign a default empty value or handle as needed
 xml_tree.SubElement(channel_element,'title').text = yaml_data['title']
 xml_tree.SubElement(channel_element,'format').text = yaml_data['format']
 xml_tree.SubElement(channel_element,'subtitle').text = yaml_data['subtitle']
